@@ -1,5 +1,5 @@
 from room import Room
-
+from player import Player
 # Declare all the rooms
 
 room = {
@@ -21,17 +21,23 @@ chamber! Sadly, it has already been completely emptied by
 earlier adventurers. The only exit is to the south."""),
 }
 
+outside =  room['outside']
+foyer =    room['foyer']
+overlook = room['overlook']
+narrow   = room['narrow']
+treasure = room['treasure']
+
 
 # Link rooms together
 
-room['outside'].n_to = room['foyer']
-room['foyer'].s_to = room['outside']
-room['foyer'].n_to = room['overlook']
-room['foyer'].e_to = room['narrow']
-room['overlook'].s_to = room['foyer']
-room['narrow'].w_to = room['foyer']
-room['narrow'].n_to = room['treasure']
-room['treasure'].s_to = room['narrow']
+outside.n_to = foyer
+foyer.s_to = outside
+foyer.n_to = overlook
+foyer.e_to = narrow
+overlook.s_to = foyer
+narrow.w_to = foyer
+narrow.n_to =  treasure
+treasure.s_to = narrow
 
 #
 # Main
@@ -49,3 +55,70 @@ room['treasure'].s_to = room['narrow']
 # Print an error message if the movement isn't allowed.
 #
 # If the user enters "q", quit the game.
+
+options = {1: 'n', 2: 's', 3: 'e', 4: 'w', 9: 'q'}
+player1 = Player('player1', 'outside', 'foyer', 'null', 'null', 'null')
+
+
+
+location = player1.location
+def user_choices():
+     choice = input('[1] n [2] s [3] e [4] w [9] q\n ')
+     text_file = open("history.txt", "w")
+     text_file.write(str(choice))
+     for i in choice:
+       if choice == '1' and player1.location == outside:
+          player1.location = f"{foyer}" 
+         
+          player1.s_to = outside
+          player1.e_to = narrow
+          player1.n_to = overlook
+          return  location == f"{foyer}"
+       elif choice == '2' and player1.location == foyer:
+            player1.location = outside
+         
+            player1.s_to = "null"
+            player1.e_to ="null"
+            player1.n_to = foyer
+            return   location == outside
+       elif choice == '3' and player1.location == foyer:
+          
+          
+            player1.w_to = foyer  
+            player1.n_to = treasure
+            return   print(narrow)
+       elif choice == '1' and player1.location == narrow:
+            return   location == f"{narrow}"
+     get_current_room()
+
+     text_file.close()
+     return options[int(choice)]
+    
+def get_current_room():
+
+
+    
+     print(outside)
+      
+     player1.s_to = outside
+     player1.n_to = overlook
+     player1.e_to = narrow
+     player1.w_to = 'null'   
+    
+ 
+
+  
+     
+ 
+        
+     
+       
+       
+               
+get_current_room()   
+while user_choices != "q":
+   
+    get_user_choice = user_choices()
+
+
+   
