@@ -21,104 +21,75 @@ chamber! Sadly, it has already been completely emptied by
 earlier adventurers. The only exit is to the south."""),
 }
 
-outside =  room['outside']
-foyer =    room['foyer']
-overlook = room['overlook']
-narrow   = room['narrow']
-treasure = room['treasure']
+room['outside'].n_to = room['foyer']
+room['foyer'].s_to = room['outside']
+room['foyer'].n_to = room['overlook']
+room['foyer'].e_to = room['narrow']
+room['overlook'].s_to = room['foyer']
+room['narrow'].w_to = room['foyer']
+room['narrow'].n_to = room['treasure']
+room['treasure'].s_to = room['narrow']
 
 
 # Link rooms together
 
-outside.n_to = foyer
-foyer.s_to = outside
-foyer.n_to = overlook
-foyer.e_to = narrow
-overlook.s_to = foyer
-narrow.w_to = foyer
-narrow.n_to =  treasure
-treasure.s_to = narrow
+
 
 #
 # Main
 #
 
 # Make a new player object that is currently in the 'outside' room.
-
-# Write a loop that:
-#
-# * Prints the current room name
-# * Prints the current description (the textwrap module might be useful here).
-# * Waits for user input and decides what to do.
-#
-# If the user enters a cardinal direction, attempt to move to the room there.
-# Print an error message if the movement isn't allowed.
-#
-# If the user enters "q", quit the game.
-
-options = {1: 'n', 2: 's', 3: 'e', 4: 'w', 9: 'q'}
-player1 = Player('player1', 'outside', 'foyer', 'null', 'null', 'null')
+print('Welcome to this crazy game!  Enter a name for you player...')
+name = input('>>')
+player = Player(name, room['outside'])
 
 
-
-location = player1.location
-def user_choices():
-     choice = input('[1] n [2] s [3] e [4] w [9] q\n ')
-     text_file = open("history.txt", "w")
-     text_file.write(str(choice))
-     for i in choice:
-       if choice == '1' and player1.location == outside:
-          player1.location = f"{foyer}" 
-         
-          player1.s_to = outside
-          player1.e_to = narrow
-          player1.n_to = overlook
-          return  location == f"{foyer}"
-       elif choice == '2' and player1.location == foyer:
-            player1.location = outside
-         
-            player1.s_to = "null"
-            player1.e_to ="null"
-            player1.n_to = foyer
-            return   location == outside
-       elif choice == '3' and player1.location == foyer:
-          
-          
-            player1.w_to = foyer  
-            player1.n_to = treasure
-            return   print(narrow)
-       elif choice == '1' and player1.location == narrow:
-            return   location == f"{narrow}"
-     get_current_room()
-
-     text_file.close()
-     return options[int(choice)]
-    
-def get_current_room():
+def current_room(player):
+    print(f'{player.name} is in {player.room}')
+    if player.room.items == 'no items':
+        print('this room has no items')
+    else:
+        print(f'this room has a{player.room.items}')
+        print(
+            'What would you like to do? [GET] pick up [N] North [S] South [E] East [W] West [Q] Quit ')
+        playerInput = input(">>").upper()
 
 
-    
-     print(outside)
-      
-     player1.s_to = outside
-     player1.n_to = overlook
-     player1.e_to = narrow
-     player1.w_to = 'null'   
-    
- 
+playerInput = ''
+while playerInput != 'Q':
+    print(current_room(player))
+    print('--------------------')
+    print(player)
+    print(
+        'Choose your next move: [N] North [S] South [E] East [W] West [Q] Quit')
+    playerInput = input(">>").upper()
 
-  
-     
- 
-        
-     
-       
-       
-               
-get_current_room()   
-while user_choices != "q":
-   
-    get_user_choice = user_choices()
+    if playerInput == 'N' or playerInput == 'S' or playerInput == 'E' or playerInput == 'W':
+        if playerInput == "N" and player.room.n_to != None:
+            player.room = player.room.n_to
+        elif playerInput == "E" and player.room.e_to != None:
+            player.room = player.room.e_to
+        elif playerInput == "S" and player.room.s_to != None:
+            player.room = player.room.s_to
+        elif playerInput == "W" and player.room.w_to != None:
+            player.room = player.room.w_to
+        else:
+            print("You can't move in that direction")
+    elif playerInput == "Q":
+        print('You ended the game')
+        break
+    elif playerInput == 'GET':
+        player.inventory.append(playerInput)
+        print(f'You just picked up a {playerInput}')
 
-
-   
+    # Write a loop that:
+    #
+    # * Prints the current room name
+    # * Prints the current description (the textwrap module might be useful here).
+    # * Waits for user input and decides what to do.
+    #
+    # If the user enters a cardinal direction, attempt to move to the room there.
+    # Print an error message if the movement isn't allowed.
+    #
+    # If the user enters "q", quit the game.
